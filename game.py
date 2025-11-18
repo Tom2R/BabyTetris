@@ -95,3 +95,12 @@ class Game:
 
         if nb_full_lines == 3:
             return (6, 0)
+        
+
+    def all_states(): #-> renvoie int[][][]
+        """Compute all the states possibles during the game and gives the list of them"""
+        #we will put them in a file
+        rst = []
+        pass
+
+

@@ -28,26 +28,13 @@ class RandomPlayer(Player):
         action = random.choice(actions)
         print(incomming_piece)
         print("nb_rotations", action.nb_rotations)
-
-        # Change the abscisse if the piece is out of the grid by the right
-        if incomming_piece.width() == 2 and action.abscisse >= state.nb_columns - 2:
-            action.abscisse -= 1
-            return action
-
-        if incomming_piece.name == "line" and action.nb_rotations % 2 == 0:
-            if action.abscisse == state.nb_columns - 2:
-                print(action.abscisse)
-                action.abscisse -= 1
-                return action
-            if action.abscisse == state.nb_columns - 1:
-                print(action.abscisse)
-                print(incomming_piece)
-                action.abscisse -= 2
-
-                return action
-
+        print("abscisse", action.abscisse) 
+        #change of action until correct one is taken (no piece out of the grid by the right)
+        while not(state.add_piece_is_valid(incomming_piece,action)):            
+            print("Decision puts the piece out of the grid, random player is trying an other action \n")
+            action = random.choice(actions)
         return action
-
+    
 
 class Selector(ABC):
     def __init__(self):

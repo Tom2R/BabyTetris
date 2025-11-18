@@ -73,18 +73,17 @@ class State:
     def __init__(self, nb_columns: int, height: int, grid=False):
         """
         Specific moment of the game
-        we have a matrix, with True if the space is free in (x,j), false overwise"""
+        we have a matrix, with True if the space is free in (x,y), false overwise"""
         self.nb_columns = nb_columns
         self.height = height
 
         if grid is False:
             self.grid = np.ones((self.nb_columns, self.height), dtype=bool)
 
-            for i in range(self.nb_columns):
-                for j in range(self.height):
-                    self.grid[i, j] = True
+
         else:
             self.grid = grid
+
 
     def __repr__(self):
 
@@ -98,6 +97,8 @@ class State:
                     row.append("#")  # occupied
             rows.append(" ".join(row))
         return "\n".join(rows)
+
+
 
     def copy(self):
         """Return a new identical state"""
@@ -153,7 +154,16 @@ class State:
                     self.grid[column + j, last_valid_abscisse + i] = False
 
         return True
-
+  
+    def add_piece_is_valid(self,piece: Piece, action: PlayerAction) -> bool:
+        "Tells if the action is allowed (piece doesn't go outside on the right) "
+        piece_chosen = piece.copy()
+        piece_chosen.rotate(action.nb_rotations)
+        if action.abscisse + piece_chosen.width() - 1 >= self.nb_columns:
+            return False
+        else:
+            return True
+        
     def count_number_full_lines(self) -> int:
         """Count the number of full lines and update the grid"""
         nb_full_lines = 0

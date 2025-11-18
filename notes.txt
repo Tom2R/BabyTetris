@@ -1,0 +1,13 @@
+--> collision function
+--> code : 
+-> methode choose action du random player function while the action (for partiular piece) is not valid choose an other action  
+-> modif add_piece_is_valid dans classe State de state.py
+
+
+
+comment push:
+--> branche principale
+terminal cd le projet
+         git commit -m "change chose_strategy in random player"
+         git push origin main
+--> branche secondaire
