@@ -6,6 +6,7 @@ from players import Selector, Player
 class Game:
     """Represents a session of the Tetris game"""
 
+
     def __init__(self, nb_colums: int, height: int, player: Player, selector: Selector):
         self.player = player
         self.selector = selector
@@ -73,7 +74,7 @@ class Game:
         new_state: State = state.copy()
         piece_added = new_state.add_piece(piece=incomming_piece, action=action)
 
-        player_r, selector_r = self.reward(piece_added=piece_added, state=state)
+        player_r, selector_r = self.reward(piece_added=piece_added, state=new_state)
 
         return new_state, player_r, selector_r
 
@@ -97,10 +98,5 @@ class Game:
             return (6, 0)
         
 
-    def all_states(): #-> renvoie int[][][]
-        """Compute all the states possibles during the game and gives the list of them"""
-        #we will put them in a file
-        rst = []
-        pass
 
 

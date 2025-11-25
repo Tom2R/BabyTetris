@@ -16,7 +16,7 @@ class Simulator(unittest.TestCase):
 
         sele = Randomselector()
 
-        game = Game(player=play, selector=sele, nb_colums=8, height=8)
+        game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
         game.play()
 
@@ -39,3 +39,17 @@ class Simulator(unittest.TestCase):
         # print("grid after")
         # print(s)
         assert cleared == 1
+
+# def test_random_duel():
+#         from players import RandomPlayer
+
+#         play = RandomPlayer()
+
+#         from players import Randomselector
+
+#         sele = Randomselector()
+
+#         game = Game(player=play, selector=sele, nb_colums=4, height=4)
+#         game.play()
+
+#test_random_duel()
