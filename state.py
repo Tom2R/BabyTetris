@@ -26,6 +26,14 @@ class Piece:
             rows.append(" ".join(row))
         return "\n".join(rows)
 
+    def __eq__(self, other):
+        if not isinstance(other, Piece):
+            return False
+        return self.name == other.name
+
+    def __hash__(self):
+        return hash((self.name))
+
     def copy(self):
         """Return a new identical piece"""
         return Piece(name=self.name, shape=deepcopy(self.shape))
@@ -80,10 +88,8 @@ class State:
         if grid is False:
             self.grid = np.ones((self.nb_columns, self.height), dtype=bool)
 
-
         else:
             self.grid = grid
-
 
     def __repr__(self):
 
@@ -98,7 +104,17 @@ class State:
             rows.append(" ".join(row))
         return "\n".join(rows)
 
+    def __eq__(self, other):
+        if not isinstance(other, State):
+            return False
+        return (
+            self.nb_columns == other.nb_columns
+            and self.height == other.height
+            and np.array_equal(self.grid, other.grid)
+        )
 
+    def __hash__(self):
+        return hash((self.nb_columns, self.height, self.grid.tobytes()))
 
     def copy(self):
         """Return a new identical state"""
@@ -135,10 +151,6 @@ class State:
         column = action.abscisse
         piece.rotate(nb_rotations=action.nb_rotations)
 
-        print("piece after rotations")
-        print(piece)
-        print("abscisse", column)
-
         line = 0
         while not self.collision_at(piece=piece, x=column, y=line):
             line += 1
@@ -154,16 +166,16 @@ class State:
                     self.grid[column + j, last_valid_abscisse + i] = False
 
         return True
-  
-    def add_piece_is_valid(self,piece: Piece, action: PlayerAction) -> bool:
-        "Tells if the action is allowed (piece doesn't go outside on the right) "
+
+    def add_piece_is_valid(self, piece: Piece, action: PlayerAction) -> bool:
+        "Tells if the action is allowed (piece doesn't go outside on the right)"
         piece_chosen = piece.copy()
         piece_chosen.rotate(action.nb_rotations)
         if action.abscisse + piece_chosen.width() - 1 >= self.nb_columns:
             return False
         else:
             return True
-        
+
     def count_number_full_lines(self) -> int:
         """Count the number of full lines and update the grid"""
         nb_full_lines = 0
