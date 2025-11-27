@@ -6,7 +6,6 @@ from players import Selector, Player
 class Game:
     """Represents a session of the Tetris game"""
 
-
     def __init__(self, nb_colums: int, height: int, player: Player, selector: Selector):
         self.player = player
         self.selector = selector
@@ -44,8 +43,10 @@ class Game:
     def play(self):
         """Main logic about a tetris game"""
         game_can_continue = True
+        player_r = 0
         while game_can_continue:
             print(" new ROUND")
+
             selector_action = self.selector.choose_strategy(
                 state=self.state, actions=self.selector_actions
             )
@@ -56,13 +57,15 @@ class Game:
                 actions=self.player_actions,
             )
 
-            self.state, player_r, selector_r = self.next_state(
+            self.state, p_r, selector_r = self.next_state(
                 state=self.state,
                 action=player_action,
                 incomming_piece=incomming_piece,
             )
+            player_r += p_r
 
             print(self.state)
+            print("Player score", player_r)
 
             if selector_r == 1:
                 game_can_continue = False
@@ -96,7 +99,3 @@ class Game:
 
         if nb_full_lines == 3:
             return (6, 0)
-        
-
-
-

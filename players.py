@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 
+from algorithms import value_iteration
 from game import Piece
 from state import PlayerAction, SelectorAction, State
 
@@ -28,13 +29,31 @@ class RandomPlayer(Player):
         action = random.choice(actions)
         print(incomming_piece)
         print("nb_rotations", action.nb_rotations)
-        print("abscisse", action.abscisse) 
-        #change of action until correct one is taken (no piece out of the grid by the right)
-        while not(state.add_piece_is_valid(incomming_piece,action)):            
-            print("Decision puts the piece out of the grid, random player is trying an other action \n")
+        print("abscisse", action.abscisse)
+        # change of action until correct one is taken (no piece out of the grid by the right)
+        while not (state.add_piece_is_valid(incomming_piece, action)):
+            print(
+                "Decision puts the piece out of the grid, random player is trying an other action \n"
+            )
             action = random.choice(actions)
         return action
-    
+
+
+class ValueIterationPlayer(Player):
+    def __init__(self):
+        super().__init__()
+
+        self.cheat_dict = value_iteration(epsilon=0.1, lamb=0.1)
+
+    def choose_strategy(
+        self, incomming_piece: Piece, state: State, actions: list[PlayerAction]
+    ):
+        """Player follows the cheat dict"""
+
+        action = self.cheat_dict[(state, incomming_piece)]
+
+        return action
+
 
 class Selector(ABC):
     def __init__(self):

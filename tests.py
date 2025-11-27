@@ -7,10 +7,23 @@ class Simulator(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
 
-    def test_random_duel(self):
+    """def test_random_duel(self):
         from players import RandomPlayer
 
         play = RandomPlayer()
+
+        from players import Randomselector
+
+        sele = Randomselector()
+
+        game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+        game.play()"""
+
+    def test_value_iteration_vs_random(self):
+        from players import ValueIterationPlayer
+
+        play = ValueIterationPlayer()
 
         from players import Randomselector
 
@@ -40,6 +53,7 @@ class Simulator(unittest.TestCase):
         # print(s)
         assert cleared == 1
 
+
 # def test_random_duel():
 #         from players import RandomPlayer
 
@@ -52,4 +66,4 @@ class Simulator(unittest.TestCase):
 #         game = Game(player=play, selector=sele, nb_colums=4, height=4)
 #         game.play()
 
-#test_random_duel()
+# test_random_duel()
