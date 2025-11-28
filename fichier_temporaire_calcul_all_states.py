@@ -1,7 +1,7 @@
 import json
 from state import State
 
-from game import Game
+
 import numpy as np
 from players import RandomPlayer
 from players import Randomselector
@@ -44,6 +44,7 @@ def state_in_listState(list_state: list[State], state: State):
 
 def fils_noeud(state: State, n: int):
     """A partir d'un certain état renvoie tous les états suivants possibles"""
+    from game import Game
     play = RandomPlayer()
     sele = Randomselector()
     jeu = Game(n, n, play, sele)

@@ -43,7 +43,7 @@ class ValueIterationPlayer(Player):
     def __init__(self):
         super().__init__()
 
-        self.cheat_dict = value_iteration(epsilon=0.1, lamb=0.1)
+        self.cheat_dict,self.avg_gain = value_iteration(epsilon=0.01, lamb=0.1)
 
     def choose_strategy(
         self, incomming_piece: Piece, state: State, actions: list[PlayerAction]

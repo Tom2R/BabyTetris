@@ -45,12 +45,15 @@ class Game:
         game_can_continue = True
         player_r = 0
         while game_can_continue:
-            print(" new ROUND")
+            
 
             selector_action = self.selector.choose_strategy(
                 state=self.state, actions=self.selector_actions
             )
             incomming_piece = selector_action.piece.copy()
+            print(" new ROUND")
+            print(incomming_piece)
+            print(self.state)
             player_action = self.player.choose_strategy(
                 incomming_piece=incomming_piece,
                 state=self.state,
@@ -63,8 +66,7 @@ class Game:
                 incomming_piece=incomming_piece,
             )
             player_r += p_r
-
-            print(self.state)
+            
             print("Player score", player_r)
 
             if selector_r == 1:
@@ -73,9 +75,8 @@ class Game:
 
     def next_state(self, state: State, action: PlayerAction, incomming_piece: Piece):
         """Return a new state without changing the main one and compute assiociated rewards"""
-
         new_state: State = state.copy()
-        piece_added = new_state.add_piece(piece=incomming_piece, action=action)
+        piece_added = new_state.add_piece(piece=incomming_piece.copy(), action=action)
 
         player_r, selector_r = self.reward(piece_added=piece_added, state=new_state)
 

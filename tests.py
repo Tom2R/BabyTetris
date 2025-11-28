@@ -67,3 +67,19 @@ class Simulator(unittest.TestCase):
 #         game.play()
 
 # test_random_duel()
+
+def test_value_iteration_vs_random():
+    from players import ValueIterationPlayer
+
+    play = ValueIterationPlayer()
+
+    from players import Randomselector
+
+    sele = Randomselector()
+
+    game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+    game.play()
+    print(play.avg_gain)
+
+test_value_iteration_vs_random()
