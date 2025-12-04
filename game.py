@@ -44,16 +44,21 @@ class Game:
         """Main logic about a tetris game"""
         game_can_continue = True
         player_r = 0
+        iter = 0
+
         while game_can_continue:
-            
+            iter += 1
 
             selector_action = self.selector.choose_strategy(
                 state=self.state, actions=self.selector_actions
             )
-            incomming_piece = selector_action.piece.copy()
-            print(" new ROUND")
+            incomming_piece = selector_action.piece
+
+            # Visualisation
+            print("incomming piece")
             print(incomming_piece)
             print(self.state)
+
             player_action = self.player.choose_strategy(
                 incomming_piece=incomming_piece,
                 state=self.state,
@@ -66,12 +71,15 @@ class Game:
                 incomming_piece=incomming_piece,
             )
             player_r += p_r
-            
-            print("Player score", player_r)
 
             if selector_r == 1:
                 game_can_continue = False
+                print("Player score", player_r)
                 print("LOOOOOOOOOOOSE")
+
+            if iter >= 10000:
+                print("INFINITE GAIN: stopped at 10000 iterations")
+                break
 
     def next_state(self, state: State, action: PlayerAction, incomming_piece: Piece):
         """Return a new state without changing the main one and compute assiociated rewards"""

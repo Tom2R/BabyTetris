@@ -34,6 +34,22 @@ class Piece:
     def __hash__(self):
         return hash((self.name))
 
+    def to_str(self):
+        # Convertit la forme en une chaîne valide pour ast.literal_eval
+        shape_str = str(self.shape.tolist())
+        return f"('{self.name}', {shape_str})"
+
+    def to_tuple(self):
+        return (
+            self.name,
+            tuple(map(tuple, self.shape.tolist())),
+        )
+
+    @classmethod
+    def from_tuple(cls, t):
+        name, shape = t
+        return cls(name, np.array(shape))
+
     def copy(self):
         """Return a new identical piece"""
         return Piece(name=self.name, shape=deepcopy(self.shape))
@@ -64,17 +80,13 @@ class PlayerAction:
         self.nb_rotations = nb_rotations
         self.abscisse = abscisse
 
+    def to_dict(self):
+        return {"nb_rotations": self.nb_rotations, "abscisse": self.abscisse}
+
 
 @dataclass(frozen=True)
 class SelectorAction:
     piece: Piece
-
-
-class Transition:
-    """Transition matrix"""
-
-    def __init__(self):
-        pass
 
 
 class State:
@@ -116,6 +128,20 @@ class State:
     def __hash__(self):
         return hash((self.nb_columns, self.height, self.grid.tobytes()))
 
+    def to_tuple(self):
+        """Converts a State into a tuple"""
+        return tuple(tuple(1 if c else 0 for c in row) for row in self.grid.T)
+
+    @classmethod
+    def from_tuple(cls, grid):
+        state = cls(len(grid[0]), len(grid))
+        state.grid = np.array(grid, dtype=bool).T
+        return state
+
+    def to_str(self):
+        grid_str = str(self.grid.tolist())
+        return f"({self.nb_columns}, {self.height}, {grid_str})"
+
     def copy(self):
         """Return a new identical state"""
         return State(
@@ -127,8 +153,7 @@ class State:
         Return True if you have a collision placing the piece in (x,y).
         Important: (x,y) represents the hight left point of the piece
         """
-        # if y == self.height - 1:
-        #    breakpoint()
+
         for i in range(piece.height()):
             for j in range(piece.width()):
                 if piece.shape[i, j]:

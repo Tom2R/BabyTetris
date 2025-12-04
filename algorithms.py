@@ -12,12 +12,12 @@ import numpy as np
 from state import Piece, PlayerAction, State
 
 
-def value_iteration(epsilon: float = 0.7, lamb: float = 0.8) -> dict:
+def value_iteration(epsilon: float = 0.7, lamb: float = 0.8):
     """
     Execute the value iteration algorithm.
     Returns: a dict[(State,piece)]=ActionPlayer that can be used by players as a strategy.
     """
-    
+
     from game import Game
     from players import RandomPlayer, Randomselector
 
@@ -25,11 +25,14 @@ def value_iteration(epsilon: float = 0.7, lamb: float = 0.8) -> dict:
     t1 = time.time()
     delta = float("inf")
     from fichier_temporaire_calcul_all_states import lire_all_states
-    states = np.array(lire_all_states())
 
+    states = np.array(lire_all_states())
     cheat_dict, values = initialize_dict(states, game.pieces)
 
+    nb_iter = 0
+
     while delta > epsilon * (1 - lamb) / 2 * lamb:
+        nb_iter += 1
         delta = 0
         next_values: dict[tuple[State, Piece], float] = {}
         for state in states:
@@ -39,16 +42,15 @@ def value_iteration(epsilon: float = 0.7, lamb: float = 0.8) -> dict:
 
                 next_values[(state, piece)] = next_gain
                 cheat_dict[(state, piece)] = best_action
+
         values = next_values
-        sum = 0
-        for key in values.keys():
-            sum += values[key]
-        print(sum/len(values))
-        print(round(delta, 3))
 
-    print("execution_time", round(time.time() - t1, 1))
+        print(round(delta, 5))
 
-    return cheat_dict,0.5*values[(State(4,4),game.pieces[0])]+0.5*values[(State(4,4),game.pieces[1])]
+    avg_gain = sum([values[key] for key in values.keys()]) / len(values)
+    execution_time = round(time.time() - t1, 3)
+
+    return (cheat_dict, avg_gain, round(delta, 5), execution_time, nb_iter)
 
 
 def L(
@@ -57,10 +59,10 @@ def L(
     """Bellman optimality equation"""
     max_gain = float("-inf")
     best_action = None
-    copied_piece = piece.copy()
+
     for action in game.player_actions:
         next_state, reward, _ = game.next_state(
-            state=state, action=action, incomming_piece=copied_piece
+            state=state, action=action, incomming_piece=piece
         )
 
         expected_value = 0.0
@@ -73,7 +75,6 @@ def L(
         if total_gain > max_gain:
             max_gain = total_gain
             best_action = action
-    #breakpoint()
 
     return max_gain, best_action
 
@@ -88,6 +89,26 @@ def initialize_dict(states, pieces):
     return {}, values
 
 
-def policy_iteration():
-    pass
+def save_cheat_dict():
+    """Function to save the Value Iteration dict into Json filed"""
+    cheat_dict, avg_gain, delta, execution_time, nb_iter = value_iteration(
+        epsilon=0.1, lamb=0.99
+    )
 
+    serializable_dict = {
+        json.dumps(
+            {
+                "state": state.to_tuple(),
+                "piece": piece.to_tuple(),
+            }
+        ): action.to_dict()
+        for (state, piece), action in cheat_dict.items()
+    }
+
+    with open("cheat_dict_lambda_0.99.json", "w") as fp:
+        json.dump(serializable_dict, fp)
+
+    print("avg_gain", avg_gain)
+    print("delta", delta)
+    print("execution time", execution_time)
+    print("nb_iterations", nb_iter)

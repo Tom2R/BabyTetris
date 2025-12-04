@@ -1,4 +1,7 @@
 import unittest
+
+from matplotlib import pyplot as plt
+import numpy as np
 from game import Game
 from state import State
 
@@ -7,23 +10,13 @@ class Simulator(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
 
-    """def test_random_duel(self):
-        from players import RandomPlayer
-
-        play = RandomPlayer()
-
-        from players import Randomselector
-
-        sele = Randomselector()
-
-        game = Game(player=play, selector=sele, nb_colums=4, height=4)
-
-        game.play()"""
-
     def test_value_iteration_vs_random(self):
+
         from players import ValueIterationPlayer
 
-        play = ValueIterationPlayer()
+        play = ValueIterationPlayer(
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.6.json"
+        )
 
         from players import Randomselector
 
@@ -44,42 +37,6 @@ class Simulator(unittest.TestCase):
         for x in range(s.nb_columns):
             s.grid[x, 4] = False
 
-        # print("grid before")
-        # print(s)
-
         cleared = s.count_number_full_lines()
 
-        # print("grid after")
-        # print(s)
         assert cleared == 1
-
-
-# def test_random_duel():
-#         from players import RandomPlayer
-
-#         play = RandomPlayer()
-
-#         from players import Randomselector
-
-#         sele = Randomselector()
-
-#         game = Game(player=play, selector=sele, nb_colums=4, height=4)
-#         game.play()
-
-# test_random_duel()
-
-def test_value_iteration_vs_random():
-    from players import ValueIterationPlayer
-
-    play = ValueIterationPlayer()
-
-    from players import Randomselector
-
-    sele = Randomselector()
-
-    game = Game(player=play, selector=sele, nb_colums=4, height=4)
-
-    game.play()
-    print(play.avg_gain)
-
-test_value_iteration_vs_random()

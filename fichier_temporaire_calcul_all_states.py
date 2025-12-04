@@ -10,17 +10,6 @@ from players import Randomselector
 #### FONCTIONS TECHNIQUES ######
 
 
-def tuple_to_state(grid_tuple):
-    """Converts a tuple into a State"""
-    np_grid = np.array(grid_tuple, dtype=bool).T
-    return State(len(grid_tuple[0]), len(grid_tuple), np_grid)
-
-
-def state_to_tuple(state: State):
-    """Converts a State into a tuple"""
-    return tuple(tuple(1 if c else 0 for c in row) for row in state.grid.T)
-
-
 def state_in_listState(list_state: list[State], state: State):
     """Nous dit si l'état donné en argument est dans la liste donnée (comparaison de grilles)"""
     for etats in list_state:
@@ -45,6 +34,7 @@ def state_in_listState(list_state: list[State], state: State):
 def fils_noeud(state: State, n: int):
     """A partir d'un certain état renvoie tous les états suivants possibles"""
     from game import Game
+
     play = RandomPlayer()
     sele = Randomselector()
     jeu = Game(n, n, play, sele)
@@ -82,7 +72,7 @@ def calcul_all_states(state0: State, n: int):
                     new_attente.append(fils)
         liste_attente = new_attente
 
-    return [state_to_tuple(elt) for elt in rst]
+    return [elt.to_tuple() for elt in rst]
 
 
 ######## DATA FILE RELATED ###################
@@ -107,7 +97,7 @@ def lire_all_states():
         data = json.load(f)
     rst = []
     for grid in data:
-        rst.append(tuple_to_state(grid))
+        rst.append(State.from_tuple(grid))
     return rst
 
 
@@ -144,26 +134,3 @@ def main(n: int):
 # for elt in lire_all_states():
 #     print(elt)
 #     print("\n")
-
-# main(4)
-
-print(
-    check(
-        tuple_to_state(
-            (
-                (np.float64(1.0), np.float64(1.0), np.float64(1.0), np.float64(1.0)),
-                (np.float64(1.0), np.float64(1.0), np.float64(1.0), np.float64(0.0)),
-                (np.float64(1.0), np.float64(1.0), np.float64(1.0), np.float64(0.0)),
-                (np.float64(1.0), np.float64(1.0), np.float64(1.0), np.float64(0.0)),
-            )
-        )
-    )
-)
-print(length_data())
-lst = lire_all_states()
-for k in range(19):
-    print(lst[k])
-    print("\n")
-
-print(state_to_tuple(lst[2]))
-print(lst[2])
