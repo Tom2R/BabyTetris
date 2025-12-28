@@ -1,27 +1,27 @@
---> dernières modifications 24/11/2025 12h58
+--> dernières modifications 28/12/2025 9h50
 
---> dans Game , la fonction next_state modifiait le state actuel en enlevant des lignes,
-mais renvoyait le next state avec potentiellement des lignes encore full dedans...
-J'ai remplacé state par new_state dans l'appel de reward
+Ajout d'un fichier algorithms_selector pour calculer l'optimal policy du selector FACING random Player
+Le save dans le fichier reverse_cheatdict/reverse_cheatdict_epsilon_lambda --> rajouter un R pour random ou O pour
+optimal.
 
-tuple_to_state --> fait (retourne un état avec la grille correspondante)
-state_to_tuple --> fait (renvoie un tuple avec 1 si true et False si 0)
-fils_noeud --> me donne tous les fils suivant un état (même des doublons) /done/
+Permettre le choix de strétagie au VI selector dans le fichier players en chargeant le reverse_cheatdict
 
-Loading of all states : fini pour n=2 et n=3 combinatoire raisonnable
-Mais pour n=4 ça explose littéralement (trouver un moyen d'optimiser le temps
-ou laisser le computer tourner toute la nuit lol) --> fait (en 2h et quelques) 
-11616 combinaisons stockées
+Je vais ensuite procéder à une phase de tests pour se faire affronter ce nouveau selector et le VI player
 
- Petit problème à régler il y a une config fausse dans le loading pour n=2, 
- mais c'est bizzare parce que la transposée fonctionnerait, je soupconne juste une
- erreur dans la construction du tuple
+Petite modif : pour éviter circular import, dans players : from game import Piece mais pas de Piece
+dans game, donc enlevé cette ligne et ça marche mieux 
 
- Attention :  à regarder demain mais les tuples sont représentés dans l'autre sens que
- les valeurs de la grid (la transposée je pense) en soi ça marche mais lorsque on switch
- en tuple ça rend un truc faux, être averti de ne regarder que la représentation des
- états.
+Enlever "actions" des arguments de choose_strategy pour le cas précis du selector ? ne sert à rien c'est dans les attributs du jeu...
 
+Resultats : le random selector est nul, il donne quasiment tout le temps le square (mais pas tout le temps) example de situation pour (0.01 ?)
+dans le projet en image.
+
+A faire : calculer la VI selector avec une distribution déterministe du player et non pas random. Moins dur, aucune somme à faire 
+juste récupérer le dico.
+Tester une heuristique pour comparer : le choix de pièce qui minimise la valeur du score obtenue par l'action (déterministe du joueur
+ou en moyenne si on considère le RandomPlayer)
+
+Tester ensuite l'évolution des droites de score par rapport à l'affrontement du Vi contre RandomSelector.
 
 comment push:
 --> branche principale

@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 import json
 import random
 
-from game import Piece
-from state import PlayerAction, SelectorAction, State
+
+from state import PlayerAction, SelectorAction, State, Piece
 
 
 class Player(ABC):
@@ -88,3 +88,29 @@ class Randomselector(Selector):
     def choose_strategy(self, state: State, actions: list[SelectorAction]):
         """Random piece selection"""
         return random.choice(actions)
+
+
+class ValueIterationOnRandomSelector(Selector):
+    def __init__(self, reverse_cheatdict_name: str):
+        super().__init__()
+        self.reverse_cheat_dict = self.load_reverse_cheat_dict(reverse_cheatdict_name)
+
+    def load_reverse_cheat_dict(self, filename):
+        with open(filename, "r") as fp:
+            loaded = json.load(fp)
+
+        reverse_cheat_dict = {}
+
+        for key_json, piece_chosen in loaded.items():
+            data = json.loads(key_json)
+
+            state = State.from_tuple(data["state"])
+            piece_action = Piece.from_tuple(piece_chosen)
+
+            reverse_cheat_dict[state] = piece_action
+
+        return reverse_cheat_dict
+
+    def choose_strategy(self, state: State, actions: list[SelectorAction]):
+        """Selector follows piece selection dico with the actual state"""
+        return SelectorAction(self.reverse_cheat_dict[state])

@@ -3,8 +3,6 @@ from state import State
 
 
 import numpy as np
-from players import RandomPlayer
-from players import Randomselector
 
 
 #### FONCTIONS TECHNIQUES ######
@@ -34,6 +32,7 @@ def state_in_listState(list_state: list[State], state: State):
 def fils_noeud(state: State, n: int):
     """A partir d'un certain état renvoie tous les états suivants possibles"""
     from game import Game
+    from players import RandomPlayer, Randomselector
 
     play = RandomPlayer()
     sele = Randomselector()

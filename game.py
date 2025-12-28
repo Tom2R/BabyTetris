@@ -76,6 +76,7 @@ class Game:
                 game_can_continue = False
                 print("Player score", player_r)
                 print("LOOOOOOOOOOOSE")
+            print("Player_score = ", player_r)
 
             if iter >= 10000:
                 print("INFINITE GAIN: stopped at 10000 iterations")
