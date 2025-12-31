@@ -69,6 +69,26 @@ class ValueIterationPlayer(Player):
         return action
 
 
+class CompactPlayer(Player):
+    """
+    Player who places the incoming piece in the most compact way possible
+    (the place with the most shared borders with pieces on the grid).
+    """
+
+    def __init__(self):
+        pass
+
+    def choose_strategy(self, incomming_piece, state, actions) -> PlayerAction:
+        """Place the piece in the most compact spot on the grid."""
+        most_borders = 0
+        for action in actions:
+            nb_borders = state.compute_nb_borders(incomming_piece.copy(), action)
+            if nb_borders >= most_borders:
+                most_borders = nb_borders
+                best_action = action
+        return best_action
+
+
 class Selector(ABC):
     def __init__(self):
         super().__init__()

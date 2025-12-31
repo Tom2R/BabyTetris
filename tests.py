@@ -3,7 +3,7 @@ import unittest
 from matplotlib import pyplot as plt
 import numpy as np
 from game import Game
-from state import State
+from state import Piece, PlayerAction, State
 import time
 
 
@@ -44,20 +44,74 @@ class Simulator(unittest.TestCase):
 
         game.play()
 
+    def test_compact_player_vs_random(self):
+
+        from players import CompactPlayer
+
+        play = CompactPlayer()
+
+        from players import Randomselector
+
+        sele = Randomselector()
+
+        game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+        game.play()
+
     def test_line_clearing(self):
 
-        s = State(nb_columns=5, height=5)
+        state = State(nb_columns=5, height=5)
 
-        s.grid[3, 3] = False
-        s.grid[2, 3] = False
-        s.grid[3, 2] = False
+        state.grid[3, 3] = False
+        state.grid[2, 3] = False
+        state.grid[3, 2] = False
 
-        for x in range(s.nb_columns):
-            s.grid[x, 4] = False
+        for x in range(state.nb_columns):
+            state.grid[x, 4] = False
 
-        cleared = s.count_number_full_lines()
+        cleared = state.count_number_full_lines()
 
         assert cleared == 1
+
+    def test_count_nb_borders(self):
+
+        state_1 = State(nb_columns=4, height=4)
+
+        state_1.grid[3, 3] = False
+        state_1.grid[2, 3] = False
+        state_1.grid[3, 2] = False
+
+        nb_borders = state_1.compute_nb_borders(
+            incomming_piece=Piece(name="square", shape=np.array([[1, 1], [1, 0]])),
+            action=PlayerAction(nb_rotations=0, abscisse=1),
+        )
+
+        assert nb_borders == 4
+
+        state_2 = State(nb_columns=4, height=4)
+
+        nb_borders = state_2.compute_nb_borders(
+            incomming_piece=Piece(name="line", shape=np.array([[1, 1, 1]])),
+            action=PlayerAction(nb_rotations=1, abscisse=0),
+        )
+
+        assert nb_borders == 4
+
+        state_3 = State(nb_columns=4, height=4)
+
+        state_3.grid[0, 3] = False
+        state_3.grid[1, 3] = False
+        state_3.grid[3, 3] = False
+
+        state_3.grid[0, 2] = False
+        state_3.grid[3, 2] = False
+
+        nb_borders = state_3.compute_nb_borders(
+            incomming_piece=Piece(name="square", shape=np.array([[1, 1], [1, 0]])),
+            action=PlayerAction(nb_rotations=1, abscisse=1),
+        )
+
+        assert nb_borders == 6
 
 
 def test_vi_player_vs_vi_random_selector(epsilon):
