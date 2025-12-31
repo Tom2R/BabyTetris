@@ -89,6 +89,38 @@ class CompactPlayer(Player):
         return best_action
 
 
+class LineEliminator(Player):
+    """
+    player who plays the action that eliminates a line if possible and plays compactly otherwise
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def choose_strategy(self, incomming_piece, state, actions) -> PlayerAction:
+
+        # first: see if you can eliminate a line
+        for action in actions:
+            new_state: State = state.copy()
+            piece_added = new_state.add_piece(
+                piece=incomming_piece.copy(), action=action
+            )
+            if piece_added:
+                nb_full_lines = new_state.count_number_full_lines()
+
+                if nb_full_lines >= 1:
+                    return action
+
+        # Second: play in compact strategy if you can not eliminate line
+        most_borders = 0
+        for action in actions:
+            nb_borders = state.compute_nb_borders(incomming_piece.copy(), action)
+            if nb_borders >= most_borders:
+                most_borders = nb_borders
+                best_action = action
+        return best_action
+
+
 class Selector(ABC):
     def __init__(self):
         super().__init__()

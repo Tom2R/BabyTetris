@@ -3,6 +3,7 @@ import unittest
 from matplotlib import pyplot as plt
 import numpy as np
 from game import Game
+from players import LineEliminator
 from state import Piece, PlayerAction, State
 import time
 
@@ -49,6 +50,20 @@ class Simulator(unittest.TestCase):
         from players import CompactPlayer
 
         play = CompactPlayer()
+
+        from players import Randomselector
+
+        sele = Randomselector()
+
+        game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+        game.play()
+
+    def test_LineEliminator_player_vs_random(self):
+
+        from players import CompactPlayer
+
+        play = LineEliminator()
 
         from players import Randomselector
 
