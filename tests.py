@@ -50,11 +50,9 @@ class Simulator(unittest.TestCase):
         from players import CompactPlayer
 
         play = CompactPlayer()
-
         from players import Randomselector
 
         sele = Randomselector()
-
         game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
         game.play()
@@ -64,7 +62,18 @@ class Simulator(unittest.TestCase):
         from players import CompactPlayer
 
         play = LineEliminator()
+        from players import Randomselector
 
+        sele = Randomselector()
+        game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+        game.play()
+
+    def test_robust_player_vs_random(self):
+
+        from players import RobustPlayer
+
+        play = RobustPlayer()
         from players import Randomselector
 
         sele = Randomselector()
@@ -146,14 +155,8 @@ def test_vi_player_vs_vi_random_selector(epsilon):
 
 
 test_vi_player_vs_vi_random_selector(0.1)
-print("next is 0.01")
-time.sleep(5)
 test_vi_player_vs_vi_random_selector(0.01)
-print("next is 0.001")
-time.sleep(5)
 test_vi_player_vs_vi_random_selector(0.001)
-print("next is random")
-time.sleep(5)
 
 
 def test_value_iteration_vs_random():

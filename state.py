@@ -83,6 +83,9 @@ class PlayerAction:
     def to_dict(self):
         return {"nb_rotations": self.nb_rotations, "abscisse": self.abscisse}
 
+    def __repr__(self):
+        return f"PlayerAction (abs:{self.abscisse},rotat:{self.nb_rotations}"
+
 
 @dataclass(frozen=True)
 class SelectorAction:
