@@ -60,29 +60,38 @@ class Simulator(unittest.TestCase):
         assert cleared == 1
 
 
-def test_vi_player_vs_vi_random_selector(epsilon):
+def test_vi_player_vs_vi_random_selector(epsilon, indicator):
+    """Generates a game between VI player and the VI selector
+    Indicator True = VI selector built with random player
+    Indicator False = VI selector built with VI player"""
+
     from players import ValueIterationPlayer
 
     play = ValueIterationPlayer(cheatdict_name="cheatdict/cheat_dict_lambda_0.6.json")
 
-    from players import ValueIterationOnRandomSelector
+    from players import ValueIterationSelectorOnRandomPlayer
 
-    sele = ValueIterationOnRandomSelector(
-        reverse_cheatdict_name=f"reverse_cheatdict/reverse_cheatdict_{epsilon}_0.1"
-    )
+    if indicator:
+        sele = ValueIterationSelectorOnRandomPlayer(
+            reverse_cheatdict_name=f"reverse_cheatdict/reverse_cheatdict_random_{epsilon}_0.1"
+        )
+    else:
+        sele = ValueIterationSelectorOnRandomPlayer(
+            reverse_cheatdict_name=f"reverse_cheatdict/reverse_cheatdict_VI_{epsilon}_0.1"
+        )
 
     game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
     game.play()
 
 
-test_vi_player_vs_vi_random_selector(0.1)
+test_vi_player_vs_vi_random_selector(0.1, False)
 print("next is 0.01")
 time.sleep(5)
-test_vi_player_vs_vi_random_selector(0.01)
+test_vi_player_vs_vi_random_selector(0.01, False)
 print("next is 0.001")
 time.sleep(5)
-test_vi_player_vs_vi_random_selector(0.001)
+test_vi_player_vs_vi_random_selector(0.001, False)
 print("next is random")
 time.sleep(5)
 

@@ -90,7 +90,13 @@ class Randomselector(Selector):
         return random.choice(actions)
 
 
-class ValueIterationOnRandomSelector(Selector):
+class GreddySelector(Selector):
+    """Définit un selector selon une heuristique de meilleur choix direct"""
+
+    pass
+
+
+class ValueIterationSelectorOnRandomPlayer(Selector):
     def __init__(self, reverse_cheatdict_name: str):
         super().__init__()
         self.reverse_cheat_dict = self.load_reverse_cheat_dict(reverse_cheatdict_name)
