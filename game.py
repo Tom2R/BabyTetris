@@ -40,7 +40,7 @@ class Game:
             SelectorAction(piece=self.pieces[1]),
         ]
 
-    def play(self):
+    def play(self, visualisation=False):
         """Main logic about a tetris game"""
         game_can_continue = True
         player_r = 0
@@ -54,10 +54,10 @@ class Game:
             )
             incomming_piece = selector_action.piece
 
-            # Visualisation
-            print("incomming piece")
-            print(incomming_piece)
-            print(self.state)
+            if visualisation:
+                print("incomming piece")
+                print(incomming_piece)
+                print(self.state)
 
             player_action = self.player.choose_strategy(
                 incomming_piece=incomming_piece,
@@ -74,12 +74,13 @@ class Game:
 
             if selector_r == 1:
                 game_can_continue = False
-                print("Player score", player_r)
-                print("LOOOOOOOOOOOSE")
-            print("Player_score = ", player_r)
+                if visualisation:
+                    print("Player score", player_r)
+                    print("LOOOOOOOOOOOSE")
 
             if iter >= 10000:
-                print("INFINITE GAIN: stopped at 10000 iterations")
+                if visualisation:
+                    print("INFINITE GAIN: stopped at 10000 iterations")
                 break
 
     def next_state(self, state: State, action: PlayerAction, incomming_piece: Piece):

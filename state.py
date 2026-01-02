@@ -83,6 +83,9 @@ class PlayerAction:
     def to_dict(self):
         return {"nb_rotations": self.nb_rotations, "abscisse": self.abscisse}
 
+    def __repr__(self):
+        return f"PlayerAction (abs:{self.abscisse},rotat:{self.nb_rotations}"
+
 
 @dataclass(frozen=True)
 class SelectorAction:
@@ -191,6 +194,45 @@ class State:
                     self.grid[column + j, last_valid_abscisse + i] = False
 
         return True
+
+    def compute_nb_borders(self, incomming_piece: Piece, action: PlayerAction) -> int:
+        """
+        Count the number of borders with the incomming piece with a given action
+        and the borders of the grid + other pieces
+        """
+        column = action.abscisse
+        incomming_piece.rotate(nb_rotations=action.nb_rotations)
+
+        line = 0
+        while not self.collision_at(piece=incomming_piece, x=column, y=line):
+            line += 1
+        last_valid_abscisse = line - 1
+        if last_valid_abscisse < 0:
+            return 0  # loose
+
+        nb_borders = 0
+
+        for i in range(incomming_piece.height()):
+            for j in range(incomming_piece.width()):
+                if incomming_piece.shape[i, j]:
+                    gx = column + j
+                    gy = last_valid_abscisse + i
+
+                    # borders with the grid
+                    if gx == 0 or gx == self.nb_columns - 1:
+                        nb_borders += 1
+                    if gy == self.height - 1:
+                        nb_borders += 1
+
+                    # borders with other pieces
+                    if gx + 1 < self.nb_columns and not self.grid[gx + 1, gy]:
+                        nb_borders += 1
+                    if gx - 1 >= 0 and not self.grid[gx - 1, gy]:
+                        nb_borders += 1
+                    if gy + 1 < self.height and not self.grid[gx, gy + 1]:
+                        nb_borders += 1
+
+        return nb_borders
 
     def add_piece_is_valid(self, piece: Piece, action: PlayerAction) -> bool:
         "Tells if the action is allowed (piece doesn't go outside on the right)"
