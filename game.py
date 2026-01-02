@@ -58,6 +58,8 @@ class Game:
                 print("incomming piece")
                 print(incomming_piece)
                 print(self.state)
+                print("Actual player score = ", player_r)
+                print("\n")
 
             player_action = self.player.choose_strategy(
                 incomming_piece=incomming_piece,
@@ -78,7 +80,7 @@ class Game:
                     print("Player score", player_r)
                     print("LOOOOOOOOOOOSE")
 
-            if iter >= 10000:
+            if iter >= 3000:
                 if visualisation:
                     print("INFINITE GAIN: stopped at 10000 iterations")
                 break

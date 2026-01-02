@@ -243,6 +243,17 @@ class State:
         else:
             return True
 
+    def score(self, nb_full_lines: int):
+        """Gives the reward associated to the number of full lines (given)"""
+        if nb_full_lines == 0:
+            return 0
+        elif nb_full_lines == 2:
+            return 3
+        elif nb_full_lines == 1:
+            return 1
+        elif nb_full_lines == 3:
+            return 6
+
     def count_number_full_lines(self) -> int:
         """Count the number of full lines and update the grid"""
         nb_full_lines = 0
