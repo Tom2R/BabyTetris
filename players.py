@@ -196,6 +196,48 @@ class RobustPlayer(CompactPlayer):
         return best_action
 
 
+class HoleFillerPlayer(CompactPlayer):
+    """The objective of this player is to minimize the number of holes and achieve a smooth surface."""
+
+    def __init__(self):
+        super().__init__()
+
+    def choose_strategy(self, incomming_piece, state, actions) -> PlayerAction:
+        best_score = 100000
+        best_action = None
+        scores: dict[PlayerAction, int] = {}
+        for action in actions:
+            new_state: State = state.copy()
+            piece_added = new_state.add_piece(
+                piece=incomming_piece.copy(), action=action
+            )
+            if piece_added:
+                heights = []
+                for col in range(new_state.nb_columns):
+                    heights.append(new_state.get_column_height(x=col))
+
+                nb_holes = new_state.count_number_holes()
+                roughness = sum(
+                    abs(heights[i] - heights[i + 1]) for i in range(len(heights) - 1)
+                )
+
+                score = 15 * nb_holes + 6 * np.var(heights) + 3 * roughness
+
+                scores[action] = score
+
+                if score <= best_score:
+                    best_score = score
+                    best_action = action
+
+        if (len(set(scores.values())) <= 1) or best_action is None:
+
+            return self.get_action_with_better_compactness(
+                incomming_piece, state, actions
+            )
+
+        return best_action
+
+
 class Selector(ABC):
     def __init__(self):
         super().__init__()

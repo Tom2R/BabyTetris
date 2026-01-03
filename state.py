@@ -262,3 +262,23 @@ class State:
         self.grid = new_grid
 
         return nb_full_lines
+
+    def get_column_height(self, x: int) -> int:
+        """Return the height of the column in x"""
+        nb_False = 0
+        for y in range(self.height):
+            if not self.grid[x, y]:
+                nb_False += 1
+        return nb_False
+
+    def count_number_holes(self) -> int:
+        """return the number of holes in the current grid"""
+        nb_holes = 0
+        for x in range(self.nb_columns):
+            first_cell_encountred = False
+            for y in range(self.height):
+                if not self.grid[x, y]:
+                    first_cell_encountred = True
+                if first_cell_encountred and self.grid[x, y]:
+                    nb_holes += 1
+        return nb_holes
