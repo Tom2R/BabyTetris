@@ -1,9 +1,12 @@
 from abc import ABC, abstractmethod
 import json
 import random
+from typing import TYPE_CHECKING
 
 import numpy as np
 
+if TYPE_CHECKING:
+    from game import Game
 
 from state import PlayerAction, SelectorAction, State, Piece
 
@@ -277,8 +280,53 @@ class GreedySelector(Selector):
             best_piece = pieces[0]
 
         if best_piece == None:
-            best_piece = random.choice(actions)
+            return random.choice(actions)
         return SelectorAction(best_piece)
+
+
+class MultiArmedSelector(Selector):
+    def __init__(self):
+        """
+        Create a multi armed selector with history dependancies
+
+        History is a list if 2 lists of int representing all the scores the player obtained
+        when selector played it
+        """
+        super().__init__()
+        self.history = [[], []]
+
+    def choose_strategy(self, state: State, actions: list[SelectorAction]):
+        """Selector chooses piece depending on what happened before"""
+        from game import Game
+
+        m1 = mean(self.history[0])
+        m2 = mean(self.history[1])
+
+        if m1 == m2:
+            new_action = random.choice(actions)
+            new_state = state.copy()
+
+        elif m1 > m2:
+            return actions[1]
+        elif m1 < m2:
+            return actions[0]
+
+        return SelectorAction()
+
+
+def mean(liste: list[int]):
+    """
+    Give the mean for a list of int
+    return 0 if empty
+    """
+    if len(liste) == 0:
+        return 0
+    else:
+        mean = 0
+        for elt in liste:
+            mean += elt
+        mean /= len(liste)
+        return mean
 
 
 class ValueIterationSelector(Selector):
