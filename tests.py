@@ -17,7 +17,7 @@ class Simulator(unittest.TestCase):
         from players import ValueIterationPlayer
 
         play = ValueIterationPlayer(
-            cheatdict_name="cheatdict/cheat_dict_lambda_0.6.json"
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.5.json"
         )
 
         from players import Randomselector
@@ -26,24 +26,66 @@ class Simulator(unittest.TestCase):
 
         game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
-        game.play()
+        game.play(visualisation=False)
 
-    def test_vi_player_vs_vi_random_selector(self):
+    def test_vi_player_vs_vi_selector_on_VI_player_01reward(self):
         from players import ValueIterationPlayer
 
         play = ValueIterationPlayer(
-            cheatdict_name="cheatdict/cheat_dict_lambda_0.9.json"
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.5.json"
         )
 
-        from players import ValueIterationOnRandomSelector
+        from players import ValueIterationSelector
 
-        sele = ValueIterationOnRandomSelector(
-            reverse_cheatdict_name="reverse_cheatdict/reverse_cheatdict_0.01_0.1"
+        sele = ValueIterationSelector(
+            vi_player=True, epsilon=0.001, lambd=0.1, type=True
         )
 
         game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
-        game.play()
+        game.play(visualisation=True)
+        print(
+            "vi_player vs vi_selector trained on VI player (lambda = 0.5) with 0/1 reward"
+        )
+        time.sleep(5)
+
+    def test_vi_player_vs_vi_selector_on_random_player_negative_reward(self):
+        from players import ValueIterationPlayer
+
+        play = ValueIterationPlayer(
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.5.json"
+        )
+
+        from players import ValueIterationSelector
+
+        sele = ValueIterationSelector(
+            vi_player=False, epsilon=0.001, lambd=0.1, type=False
+        )
+
+        game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+        game.play(visualisation=True)
+        print("vi_player vs vi_selector on random player with negative reward")
+        time.sleep(5)
+
+    def test_vi_player_vs_vi_selector_on_random_player_01reward(self):
+        from players import ValueIterationPlayer
+
+        play = ValueIterationPlayer(
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.5.json"
+        )
+
+        from players import ValueIterationSelector
+
+        sele = ValueIterationSelector(
+            vi_player=False, epsilon=0.001, lambd=0.1, type=True
+        )
+
+        game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+        game.play(visualisation=True)
+        print("vi_player vs vi_selector on random player with 0/1 reward ")
+        time.sleep(5)
 
     def test_compact_player_vs_random(self):
 
@@ -55,7 +97,7 @@ class Simulator(unittest.TestCase):
         sele = Randomselector()
         game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
-        game.play()
+        game.play(visualisation=False)
 
     def test_LineEliminator_player_vs_random(self):
 
@@ -67,7 +109,7 @@ class Simulator(unittest.TestCase):
         sele = Randomselector()
         game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
-        game.play()
+        game.play(visualisation=False)
 
     def test_robust_player_vs_random(self):
 
@@ -80,7 +122,21 @@ class Simulator(unittest.TestCase):
 
         game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
-        game.play()
+        game.play(visualisation=False)
+
+    def test_greedy_selector_vs_vi_player(self):
+        from players import GreedySelector, ValueIterationPlayer
+
+        play = ValueIterationPlayer(
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.5.json"
+        )
+        sele = GreedySelector()
+
+        game = Game(4, 4, player=play, selector=sele)
+
+        game.play(visualisation=True)
+        print("greedy vs vi_player")
+        time.sleep(5)
 
     def test_line_clearing(self):
 
@@ -138,6 +194,9 @@ class Simulator(unittest.TestCase):
         assert nb_borders == 6
 
 
+###    Tests en dehors du module test   ###
+
+
 def test_vi_player_vs_vi_random_selector(epsilon, indicator):
     """Generates a game between VI player and the VI selector
     Indicator True = VI selector built with random player
@@ -147,25 +206,25 @@ def test_vi_player_vs_vi_random_selector(epsilon, indicator):
 
     play = ValueIterationPlayer(cheatdict_name="cheatdict/cheat_dict_lambda_0.6.json")
 
-    from players import ValueIterationSelectorOnRandomPlayer
+    from players import ValueIterationSelector
 
     if indicator:
-        sele = ValueIterationSelectorOnRandomPlayer(
+        sele = ValueIterationSelector(
             reverse_cheatdict_name=f"reverse_cheatdict/reverse_cheatdict_random_{epsilon}_0.1"
         )
     else:
-        sele = ValueIterationSelectorOnRandomPlayer(
+        sele = ValueIterationSelector(
             reverse_cheatdict_name=f"reverse_cheatdict/reverse_cheatdict_VI_{epsilon}_0.1"
         )
 
     game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
-    game.play()
+    game.play(visualisation=False)
 
 
-test_vi_player_vs_vi_random_selector(0.1)
-test_vi_player_vs_vi_random_selector(0.01)
-test_vi_player_vs_vi_random_selector(0.001)
+# test_vi_player_vs_vi_random_selector(0.1, True)
+# test_vi_player_vs_vi_random_selector(0.01, True)
+# test_vi_player_vs_vi_random_selector(0.001, True)
 
 
 def test_value_iteration_vs_random():
@@ -180,7 +239,37 @@ def test_value_iteration_vs_random():
 
     game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
-    game.play()
+    game.play(visualisation=False)
 
 
-test_value_iteration_vs_random()
+# test_value_iteration_vs_random()
+
+
+def test_compact_player_vs_random():
+
+    from players import CompactPlayer
+
+    play = CompactPlayer()
+    from players import Randomselector
+
+    sele = Randomselector()
+    game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+    game.play(visualisation=False)
+
+
+# test_compact_player_vs_random()
+
+
+def test_greedy_selector_vs_vi_player():
+    from players import GreedySelector, ValueIterationPlayer
+
+    play = ValueIterationPlayer(cheatdict_name="cheatdict/cheat_dict_lambda_0.5.json")
+    sele = GreedySelector()
+
+    game = Game(4, 4, player=play, selector=sele)
+
+    game.play(visualisation=False)
+
+
+# test_greedy_selector_vs_vi_player()

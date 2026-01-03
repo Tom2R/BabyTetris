@@ -58,6 +58,8 @@ class Game:
                 print("incomming piece")
                 print(incomming_piece)
                 print(self.state)
+                print("Actual player score = ", player_r)
+                print("\n")
 
             player_action = self.player.choose_strategy(
                 incomming_piece=incomming_piece,

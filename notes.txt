@@ -26,6 +26,7 @@ Tester ensuite l'évolution des droites de score par rapport à l'affrontement d
 comment push:
 --> branche principale
 terminal cd le projet
+         git add <files>
          git commit -m "change choose_strategy in random player"
          git push origin main
 --> branche secondaire

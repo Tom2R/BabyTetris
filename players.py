@@ -259,16 +259,103 @@ class Randomselector(Selector):
         return random.choice(actions)
 
 
-class GreddySelector(Selector):
-    """Définit un selector selon une heuristique de meilleur choix direct"""
+class GreedySelector(Selector):
+    """
+    Selector qui donne une pièce minimisant le maximum des scores
+    pouvant être obtenus par le joueur
+    """
 
-    pass
-
-
-class ValueIterationSelectorOnRandomPlayer(Selector):
-    def __init__(self, reverse_cheatdict_name: str):
+    def __init__(self):
         super().__init__()
-        self.reverse_cheat_dict = self.load_reverse_cheat_dict(reverse_cheatdict_name)
+
+    def choose_strategy(self, state: State, actions: list[SelectorAction]):
+
+        pieces: list[Piece] = [
+            Piece(name="line", shape=np.array([[1, 1, 1]])),
+            Piece(name="square", shape=np.array([[1, 1], [1, 0]])),
+        ]
+        player_actions: list[PlayerAction] = []
+
+        # no rotation
+        for n in range(4):
+            player_actions.append(PlayerAction(nb_rotations=0, abscisse=n))
+
+        # 90 rotation
+        for n in range(4):
+            player_actions.append(PlayerAction(nb_rotations=1, abscisse=n))
+
+        # 180 rotation
+        for n in range(4):
+            player_actions.append(PlayerAction(nb_rotations=2, abscisse=n))
+
+        # 270 rotation
+        for n in range(4):
+            player_actions.append(PlayerAction(nb_rotations=3, abscisse=n))
+
+        minimum = 6
+        best_piece = None
+        total = {p: 0 for p in pieces}
+        for p in pieces:
+            reward_max = 0
+            for action in player_actions:
+                new_state = state.copy()
+                piece = p.copy()
+                if new_state.add_piece_is_valid(piece, action):
+                    if new_state.add_piece(piece, action):
+                        nb_full_lines = new_state.count_number_full_lines()
+                        if new_state.score(nb_full_lines=nb_full_lines) > reward_max:
+                            reward_max = new_state.score(nb_full_lines=nb_full_lines)
+
+            total[p] = reward_max
+            # if reward_max < minimum:
+            #     best_piece = p
+            #     minimum = reward_max
+
+        if total[pieces[0]] == total[pieces[1]]:
+            best_piece = random.choice(actions).piece
+        elif total[pieces[0]] > total[pieces[1]]:
+            best_piece = pieces[1]
+        else:
+            best_piece = pieces[0]
+
+        if best_piece == None:
+            best_piece = random.choice(actions)
+        return SelectorAction(best_piece)
+
+
+class ValueIterationSelector(Selector):
+    def __init__(self, vi_player: bool, epsilon: float, lambd: float, type: bool):
+        """
+        If type we use the selector trained with random player with negative reward
+
+        Else
+        {
+        if vi_player we use the selector trained with VI with 0/1 reward and a vi_player
+
+        if not(vi_player) we use the selector trained with VI with 0/1 reward and a random player
+        }
+
+        """
+        super().__init__()
+        if type:
+            reverse_cheatdict_name = (
+                f"reverse_cheatdict_reward2/reverse_cheatdict_random_{epsilon}_{lambd}"
+            )
+            self.reverse_cheat_dict = self.load_reverse_cheat_dict(
+                reverse_cheatdict_name
+            )
+        else:
+            if vi_player:
+                reverse_cheatdict_name = (
+                    f"reverse_cheatdict/reverse_cheatdict_VI_{epsilon}_{lambd}"
+                )
+            else:
+                reverse_cheatdict_name = (
+                    f"reverse_cheatdict/reverse_cheatdict_random_{epsilon}_{lambd}"
+                )
+            self.reverse_cheat_dict = self.load_reverse_cheat_dict(
+                reverse_cheatdict_name
+            )
 
     def load_reverse_cheat_dict(self, filename):
         with open(filename, "r") as fp:
