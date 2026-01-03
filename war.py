@@ -36,32 +36,32 @@ def launch_war():
     }
 
     deterministic_selectors: dict[str, Selector] = {
-        "VI_in_VI_player_O/1_reward_0.1": ValueIterationSelector(
-            vi_player=True, epsilon=0.001, lambd=0.1, type=False
+        "VI_in_VI_player_0/1_reward_0.1": ValueIterationSelector(
+            vi_player=True, epsilon=0.001, lambd=0.1, type=True
         ),
-        "VI_in_VI_player_O/1_reward_0.5": ValueIterationSelector(
-            vi_player=True, epsilon=0.001, lambd=0.5, type=False
+        "VI_in_VI_player_0/1_reward_0.5": ValueIterationSelector(
+            vi_player=True, epsilon=0.001, lambd=0.5, type=True
         ),
-        "VI_in_VI_player_O/1_reward_O.9": ValueIterationSelector(
-            vi_player=True, epsilon=0.001, lambd=0.9, type=False
+        "VI_in_VI_player_0/1_reward_0.9": ValueIterationSelector(
+            vi_player=True, epsilon=0.001, lambd=0.9, type=True
         ),
-        "VI_in_random_player_O/1_reward_0.1": ValueIterationSelector(
-            vi_player=False, epsilon=0.001, lambd=0.1, type=False
-        ),
-        "VI_in_random_player_O/1_reward_0.5": ValueIterationSelector(
-            vi_player=False, epsilon=0.001, lambd=0.5, type=False
-        ),
-        "VI_in_random_player_O/1_reward_O.9": ValueIterationSelector(
-            vi_player=False, epsilon=0.001, lambd=0.9, type=False
-        ),
-        "VI_in_random_player_reverse_reward_0.1": ValueIterationSelector(
+        "VI_in_random_player_0/1_reward_0.1": ValueIterationSelector(
             vi_player=False, epsilon=0.001, lambd=0.1, type=True
         ),
-        "VI_in_random_player_reverse_reward_0.5": ValueIterationSelector(
+        "VI_in_random_player_0/1_reward_0.5": ValueIterationSelector(
             vi_player=False, epsilon=0.001, lambd=0.5, type=True
         ),
-        "VI_in_random_player_reverse_reward_O.9": ValueIterationSelector(
+        "VI_in_random_player_0/1_reward_0.9": ValueIterationSelector(
             vi_player=False, epsilon=0.001, lambd=0.9, type=True
+        ),
+        "VI_in_random_player_reverse_reward_0.1": ValueIterationSelector(
+            vi_player=False, epsilon=0.001, lambd=0.1, type=False
+        ),
+        "VI_in_random_player_reverse_reward_0.5": ValueIterationSelector(
+            vi_player=False, epsilon=0.001, lambd=0.5, type=False
+        ),
+        "VI_in_random_player_reverse_reward_0.9": ValueIterationSelector(
+            vi_player=False, epsilon=0.001, lambd=0.9, type=False
         ),
     }
     randomized_selectors: dict[str, Selector] = {

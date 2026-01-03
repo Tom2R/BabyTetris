@@ -134,7 +134,7 @@ class Simulator(unittest.TestCase):
 
         game = Game(4, 4, player=play, selector=sele)
 
-        game.play(visualisation=True)
+        game.play(visualisation=False)
         print("greedy vs vi_player")
         time.sleep(5)
 

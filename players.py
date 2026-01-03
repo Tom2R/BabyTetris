@@ -374,9 +374,9 @@ def mean(liste: list[int]):
 class ValueIterationSelector(Selector):
     def __init__(self, vi_player: bool, epsilon: float, lambd: float, type: bool):
         """
-        If type we use the selector trained with random player with negative reward
+        If not(type) we use the selector trained with random player with negative reward
 
-        Else
+        If type
         {
         if vi_player we use the selector trained with VI with 0/1 reward and a vi_player
 
@@ -385,7 +385,7 @@ class ValueIterationSelector(Selector):
 
         """
         super().__init__()
-        if type:
+        if not (type):
             reverse_cheatdict_name = (
                 f"reverse_cheatdict_reward2/reverse_cheatdict_random_{epsilon}_{lambd}"
             )
