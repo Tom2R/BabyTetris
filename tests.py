@@ -32,18 +32,35 @@ class Simulator(unittest.TestCase):
         from players import ValueIterationPlayer
 
         play = ValueIterationPlayer(
-            cheatdict_name="cheatdict/cheat_dict_lambda_0.9.json"
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.6.json"
         )
 
-        from players import ValueIterationSelectorOnRandomPlayer
+        from players import ValueIterationSelector
 
-        sele = ValueIterationSelectorOnRandomPlayer(
-            vi_player=True, epsilon=0.01, lambd=0.1
+        sele = ValueIterationSelector(
+            vi_player=True, epsilon=0.01, lambd=0.1, type=False
         )
 
         game = Game(player=play, selector=sele, nb_colums=4, height=4)
 
         game.play(visualisation=False)
+
+    def test_vi_player_vs_vi_selector_on_random_player_negative_reward(self):
+        from players import ValueIterationPlayer
+
+        play = ValueIterationPlayer(
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.6.json"
+        )
+
+        from players import ValueIterationSelector
+
+        sele = ValueIterationSelector(
+            vi_player=True, epsilon=0.001, lambd=0.1, type=True
+        )
+
+        game = Game(player=play, selector=sele, nb_colums=4, height=4)
+
+        game.play(visualisation=True)
 
     def test_compact_player_vs_random(self):
 
@@ -92,7 +109,7 @@ class Simulator(unittest.TestCase):
 
         game = Game(4, 4, player=play, selector=sele)
 
-        game.play(visualisation=True)
+        game.play(visualisation=False)
 
     def test_line_clearing(self):
 
@@ -162,14 +179,14 @@ def test_vi_player_vs_vi_random_selector(epsilon, indicator):
 
     play = ValueIterationPlayer(cheatdict_name="cheatdict/cheat_dict_lambda_0.6.json")
 
-    from players import ValueIterationSelectorOnRandomPlayer
+    from players import ValueIterationSelector
 
     if indicator:
-        sele = ValueIterationSelectorOnRandomPlayer(
+        sele = ValueIterationSelector(
             reverse_cheatdict_name=f"reverse_cheatdict/reverse_cheatdict_random_{epsilon}_0.1"
         )
     else:
-        sele = ValueIterationSelectorOnRandomPlayer(
+        sele = ValueIterationSelector(
             reverse_cheatdict_name=f"reverse_cheatdict/reverse_cheatdict_VI_{epsilon}_0.1"
         )
 

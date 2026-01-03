@@ -281,18 +281,39 @@ class GreedySelector(Selector):
         return SelectorAction(best_piece)
 
 
-class ValueIterationSelectorOnRandomPlayer(Selector):
-    def __init__(self, vi_player, epsilon, lambd):
+class ValueIterationSelector(Selector):
+    def __init__(self, vi_player: bool, epsilon: float, lambd: float, type: bool):
+        """
+        If type we use the selector trained with VI with negative reward
+
+        Else
+        {
+        if vi_player we use the selector trained with VI with 0/1 reward and a vi_player
+
+        if not(vi_player) we use the selector trained with VI with random player
+        }
+
+        """
         super().__init__()
-        if vi_player:
+        if type:
             reverse_cheatdict_name = (
-                f"reverse_cheatdict/reverse_cheatdict_VI_{epsilon}_{lambd}"
+                f"reverse_cheatdict_reward2/reverse_cheatdict_random_{epsilon}_{lambd}"
+            )
+            self.reverse_cheat_dict = self.load_reverse_cheat_dict(
+                reverse_cheatdict_name
             )
         else:
-            reverse_cheatdict_name = (
-                f"reverse_cheatdict/reverse_cheatdict_random_{epsilon}_{lambd}"
+            if vi_player:
+                reverse_cheatdict_name = (
+                    f"reverse_cheatdict/reverse_cheatdict_VI_{epsilon}_{lambd}"
+                )
+            else:
+                reverse_cheatdict_name = (
+                    f"reverse_cheatdict/reverse_cheatdict_random_{epsilon}_{lambd}"
+                )
+            self.reverse_cheat_dict = self.load_reverse_cheat_dict(
+                reverse_cheatdict_name
             )
-        self.reverse_cheat_dict = self.load_reverse_cheat_dict(reverse_cheatdict_name)
 
     def load_reverse_cheat_dict(self, filename):
         with open(filename, "r") as fp:
