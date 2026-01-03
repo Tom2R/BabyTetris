@@ -17,7 +17,7 @@ def save_reverse_cheatdict(epsilon, lambd, indicator, type=True):
     """Save the reverse cheatdict for the selector from the VI in
     the file 'reverse_cheatdict/reverse_cheatdict_epsilon_lambd'
 
-    indicator = True will give a result accordind to random player
+    indicator = True will give a result according to random player
 
     type = True gives a VI with a 0/1 reward
     type = False saves a VI with a 0,-1,-3,-6 reward
@@ -39,7 +39,7 @@ def save_reverse_cheatdict(epsilon, lambd, indicator, type=True):
         txt = f"reverse_cheatdict_reward2/reverse_cheatdict_random_{str(epsilon)}_{str(lambd)}"
     with open(txt, "w") as f:
         data = json.dump(serializable_dict, f)
-        if type:
+        if not (type):
             print(
                 f"CHARGEMENT DONE VI SELECTOR on random player with opposite negative reward and epsilon = {epsilon} et lambda = {lambd}"
             )
@@ -56,7 +56,7 @@ def value_iteration_selector(epsilon: float, lambd: float, type: bool, indicator
     from fichier_temporaire_calcul_all_states import lire_all_states
     from game import Game
 
-    play = ValueIterationPlayer(f"cheatdict/cheat_dict_lambda_{lambd}.json")
+    play = ValueIterationPlayer(f"cheatdict/cheat_dict_lambda_0.5.json")
     game = Game(4, 4, play, Randomselector())
     all_states = lire_all_states()
     V0 = {state: 0 for state in all_states}
@@ -94,6 +94,7 @@ def L_random(state: State, V: dict[State], lambd: float, type: bool):
     game.state = state
     total = {p: 0 for p in game.pieces}
     for p in game.pieces:
+        piece = p.copy()
         total[p] = rewardSelector(state=state, piece=piece, type=type)
         somme = 0
         for action in game.player_actions:
@@ -179,9 +180,20 @@ def N_8(V1, V2):
     return rst
 
 
-save_reverse_cheatdict(0.1, 0.1, indicator=False, type=False)
-save_reverse_cheatdict(0.01, 0.1, False, False)
-save_reverse_cheatdict(0.001, 0.1, False, False)
+# saving of VI selector on random player & reward 0/1
+save_reverse_cheatdict(0.001, 0.1, indicator=True, type=True)
+save_reverse_cheatdict(0.001, 0.5, indicator=True, type=True)
+save_reverse_cheatdict(0.001, 0.9, indicator=True, type=True)
+
+# saving of VI selector on VI player & reward 0/1
+save_reverse_cheatdict(0.001, 0.1, indicator=False, type=True)
+save_reverse_cheatdict(0.001, 0.5, indicator=False, type=True)
+save_reverse_cheatdict(0.001, 0.9, indicator=False, type=True)
+
+# saving of VI selector on random player & reward 0,-1,-3,-6
+save_reverse_cheatdict(0.001, 0.1, indicator=False, type=False)
+save_reverse_cheatdict(0.001, 0.5, indicator=False, type=False)
+save_reverse_cheatdict(0.001, 0.9, indicator=False, type=False)
 
 
 def infos_reverse_cheatdict(filename):

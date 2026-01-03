@@ -284,13 +284,13 @@ class GreedySelector(Selector):
 class ValueIterationSelector(Selector):
     def __init__(self, vi_player: bool, epsilon: float, lambd: float, type: bool):
         """
-        If type we use the selector trained with VI with negative reward
+        If type we use the selector trained with random player with negative reward
 
         Else
         {
         if vi_player we use the selector trained with VI with 0/1 reward and a vi_player
 
-        if not(vi_player) we use the selector trained with VI with random player
+        if not(vi_player) we use the selector trained with VI with 0/1 reward and a random player
         }
 
         """

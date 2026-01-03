@@ -80,9 +80,9 @@ class Game:
                     print("Player score", player_r)
                     print("LOOOOOOOOOOOSE")
 
-            if iter >= 3000:
+            if iter >= 10000:
                 if visualisation:
-                    print("INFINITE GAIN: stopped at 3000 iterations")
+                    print("INFINITE GAIN: stopped at 10000 iterations")
                 break
 
     def next_state(self, state: State, action: PlayerAction, incomming_piece: Piece):
