@@ -1,6 +1,6 @@
 import numpy as np
 from state import Piece, PlayerAction, SelectorAction, State
-from players import Selector, Player
+from players import Selector, Player, MultiArmedSelector
 
 
 class Game:
@@ -73,6 +73,26 @@ class Game:
                 incomming_piece=incomming_piece,
             )
             player_r += p_r
+            if type(self.selector) == MultiArmedSelector:
+                from players import mean
+
+                self.selector.history[incomming_piece].append(p_r)
+                # print(
+                #     "longueur ",
+                #     len(self.selector.history[self.selector_actions[0].piece]),
+                # )
+                # print(
+                #     "moyenne ",
+                #     mean(self.selector.history[self.selector_actions[0].piece]),
+                # )
+                # print(
+                #     "longueur ",
+                #     len(self.selector.history[self.selector_actions[1].piece]),
+                # )
+                # print(
+                #     "moyenne ",
+                #     mean(self.selector.history[self.selector_actions[1].piece]),
+                # )
 
             if selector_r == 1:
                 game_can_continue = False
