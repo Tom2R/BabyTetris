@@ -47,7 +47,6 @@ class Simulator(unittest.TestCase):
         print(
             "vi_player vs vi_selector trained on VI player (lambda = 0.5) with 0/1 reward"
         )
-        time.sleep(5)
 
     def test_vi_player_vs_vi_selector_on_random_player_negative_reward(self):
         from players import ValueIterationPlayer
@@ -66,7 +65,6 @@ class Simulator(unittest.TestCase):
 
         game.play(visualisation=True)
         print("vi_player vs vi_selector on random player with negative reward")
-        time.sleep(5)
 
     def test_vi_player_vs_vi_selector_on_random_player_01reward(self):
         from players import ValueIterationPlayer
@@ -85,7 +83,6 @@ class Simulator(unittest.TestCase):
 
         game.play(visualisation=True)
         print("vi_player vs vi_selector on random player with 0/1 reward ")
-        time.sleep(5)
 
     def test_compact_player_vs_random(self):
 
@@ -136,7 +133,19 @@ class Simulator(unittest.TestCase):
 
         game.play(visualisation=False)
         print("greedy vs vi_player")
-        time.sleep(5)
+
+    def test_multi_armed_selector(self):
+        from players import ValueIterationPlayer, MultiArmedSelector
+
+        play = ValueIterationPlayer(
+            cheatdict_name="cheatdict/cheat_dict_lambda_0.5.json"
+        )
+        sele = MultiArmedSelector()
+
+        game = Game(4, 4, player=play, selector=sele)
+
+        game.play(visualisation=True)
+        print("multi armed selector")
 
     def test_line_clearing(self):
 
@@ -273,3 +282,18 @@ def test_greedy_selector_vs_vi_player():
 
 
 # test_greedy_selector_vs_vi_player()
+
+
+def test_multi_armed_selector():
+    from players import ValueIterationPlayer, MultiArmedSelector
+
+    play = ValueIterationPlayer(cheatdict_name="cheatdict/cheat_dict_lambda_0.5.json")
+    sele = MultiArmedSelector()
+
+    game = Game(4, 4, player=play, selector=sele)
+
+    game.play(visualisation=True)
+    print("multi armed selector")
+
+
+test_multi_armed_selector()

@@ -335,25 +335,37 @@ class MultiArmedSelector(Selector):
         when selector played it
         """
         super().__init__()
-        self.history = [[], []]
+        self.actions: list[SelectorAction] = [
+            SelectorAction(Piece(name="line", shape=np.array([[1, 1, 1]]))),
+            SelectorAction(Piece(name="square", shape=np.array([[1, 1], [1, 0]]))),
+        ]
+        self.history = {p.piece: [] for p in self.actions}
 
     def choose_strategy(self, state: State, actions: list[SelectorAction]):
         """Selector chooses piece depending on what happened before"""
         from game import Game
 
-        m1 = mean(self.history[0])
-        m2 = mean(self.history[1])
-
+        m1 = sum(self.history[self.actions[0].piece]) + 0 * len(
+            self.history[self.actions[0].piece]
+        )
+        m2 = sum(self.history[self.actions[1].piece]) + 0 * len(
+            self.history[self.actions[1].piece]
+        )
         if m1 == m2:
-            new_action = random.choice(actions)
-            new_state = state.copy()
-
+            if len(self.history[self.actions[0].piece]) > len(
+                self.history[self.actions[1].piece]
+            ):
+                return self.actions[1]
+            elif len(self.history[self.actions[0].piece]) < len(
+                self.history[self.actions[1].piece]
+            ):
+                return self.actions[0]
+            else:
+                return random.choice(self.actions)
         elif m1 > m2:
-            return actions[1]
+            return self.actions[1]
         elif m1 < m2:
-            return actions[0]
-
-        return SelectorAction()
+            return self.actions[0]
 
 
 def mean(liste: list[int]):
