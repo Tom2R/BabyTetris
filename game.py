@@ -45,6 +45,8 @@ class Game:
         game_can_continue = True
         player_r = 0
         iter = 0
+        iterations = []
+        scores = []
 
         while game_can_continue:
             iter += 1
@@ -80,10 +82,15 @@ class Game:
                     print("Player score", player_r)
                     print("LOOOOOOOOOOOSE")
 
+            scores.append(player_r)
+            iterations.append(iter)
+
             if iter >= 10000:
                 if visualisation:
                     print("INFINITE GAIN: stopped at 10000 iterations")
-                break
+                    # break
+                return iterations, scores
+        return iterations, scores
 
     def next_state(self, state: State, action: PlayerAction, incomming_piece: Piece):
         """Return a new state without changing the main one and compute assiociated rewards"""
